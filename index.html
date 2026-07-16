@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+background:black;
+color:white;
+font-family:'Poppins',sans-serif;
+overflow:hidden;
+height:100vh;
+text-align:center;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-3;
+}
+
+.nebula{
+position:fixed;
+width:600px;
+height:600px;
+background:radial-gradient(circle,rgba(255,105,180,.35),transparent 70%);
+top:10%;
+left:50%;
+transform:translateX(-50%);
+filter:blur(45px);
+z-index:-2;
+animation:pulseGlow 6s infinite alternate;
+}
+
+#rotateScreen{
+position:fixed;
+inset:0;
+background:black;
+z-index:99999;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+padding:30px;
+}
+
+#rotateScreen h1{
+font-size:35px;
+color:pink;
+text-shadow:0 0 15px pink;
+}
+
+#rotateScreen p{
+margin-top:15px;
+font-size:18px;
+}
+
+#startScreen{
+position:fixed;
+inset:0;
+background:black;
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+font-size:40px;
+text-shadow:0 0 20px pink;
+cursor:pointer;
+}
+
+.main{
+height:100vh;
+width:100vw;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow-y:auto;
+padding:20px;
+}
+
+.container{
+max-width:95vw;
+max-height:95vh;
+overflow-y:auto;
+padding:20px;
+}
+
+#countdown{
+font-size:90px;
+text-shadow:0 0 20px white;
+}
+
+#birthday{display:none;}
+
+#birthday h1{
+font-family:'Great Vibes',cursive;
+font-size:48px;
+letter-spacing:2px;
+color:pink;
+text-shadow:0 0 15px pink;
+margin-bottom:15px;
+}
+
+.envelope-container{
+margin-top:15px;
+cursor:pointer;
+}
+
+.envelope{
+position:relative;
+width:220px;
+height:140px;
+background:#ff4f81;
+margin:auto;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 0 25px rgba(255,105,180,.7);
+}
+
+.flap{
+position:absolute;
+inset:0;
+background:#ff7aa2;
+clip-path:polygon(0 0,50% 55%,100% 0);
+transform-origin:top;
+transition:1s;
+z-index:2;
+}
+
+.letter-inside{
+position:absolute;
+width:90%;
+height:85%;
+background:white;
+color:black;
+left:5%;
+top:8%;
+border-radius:10px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:38px;
+transition:1s;
+z-index:1;
+}
+
+.envelope.open .flap{transform:rotateX(180deg);}
+.envelope.open .letter-inside{transform:translateY(-100px);}
+
+.tap-text{
+margin-top:12px;
+font-size:18px;
+color:pink;
+}
+
+#letter{
+display:none;
+margin-top:15px;
+animation:fade 1.5s;
+}
+
+.message{
+font-size:17px;
+line-height:1.6;
+background:rgba(255,255,255,.09);
+padding:18px;
+border-radius:20px;
+backdrop-filter:blur(5px);
+max-width:760px;
+margin:auto;
+}
+
+.closeBtn{
+margin-top:15px;
+padding:10px 25px;
+border:none;
+border-radius:25px;
+background:pink;
+color:white;
+font-size:16px;
+box-shadow:0 0 15px pink;
+}
+
+.sticker{
+position:fixed;
+font-size:30px;
+animation:floatSticker 7s linear forwards;
+z-index:20;
+}
+
+#heartGallery{
+display:none;
+position:fixed;
+inset:0;
+width:100vw;
+height:100vh;
+overflow:hidden;
+z-index:50;
+background:rgba(0,0,0,.96);
+}
+
+#heartStage{
+position:absolute;
+left:50%;
+top:50%;
+width:min(92vw,720px);
+height:min(86vh,430px);
+transform:translate(-50%,-50%);
+}
+
+.flying-photo{
+position:absolute;
+width:clamp(38px,7vw,58px);
+height:clamp(48px,9vw,72px);
+object-fit:cover;
+border-radius:13px;
+border:3px solid white;
+box-shadow:0 0 12px pink,0 0 24px rgba(255,105,180,.9);
+background:white;
+opacity:0;
+animation:popHeart 1.2s forwards;
+}
+
+@keyframes popHeart{
+from{
+opacity:0;
+transform:translate(-50%,-50%) scale(.2) rotate(var(--r));
+}
+to{
+opacity:1;
+transform:translate(-50%,-50%) scale(1) rotate(var(--r));
+}
+}
+#cake{
+display:none;
+font-size:110px;
+animation:fade 2s;
+}
+
+#cake h2{
+font-family:'Great Vibes',cursive;
+font-size:46px;
+color:pink;
+text-shadow:0 0 15px pink;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes pulseGlow{
+from{opacity:.4;transform:translateX(-50%) scale(1);}
+to{opacity:.9;transform:translateX(-50%) scale(1.3);}
+}
+
+@keyframes floatSticker{
+from{transform:translateY(100vh) rotate(0);opacity:1;}
+to{transform:translateY(-120vh) rotate(360deg);opacity:0;}
+}
+
+@keyframes flyHeart{
+from{transform:scale(.2);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+@media (orientation: landscape){
+#rotateScreen{display:none;}
+#startScreen{display:flex;}
+}
+
+@media (orientation: portrait){
+#rotateScreen{display:flex;}
+#startScreen{display:none!important;}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+<source src="music.mp3" type="audio/mp3">
+</audio>
+
+<div id="rotateScreen">
+<h1>Rotate your phone 💕</h1>
+<p>Please turn your phone sideways to open your surprise ✨</p>
+</div>
+
+<div id="startScreen">
+Tap To Open ❤️
+</div>
+
+<canvas id="stars"></canvas>
+<div class="nebula"></div>
+
+<div class="main">
+<div class="container">
+
+<h1 id="countdown">3</h1>
+
+<div id="birthday">
+<h1>Happy Birthday My Love ❤️</h1>
+
+<div class="envelope-container" onclick="openLetter()">
+<div class="envelope">
+<div class="flap"></div>
+<div class="letter-inside">💌</div>
+</div>
+<p class="tap-text">Tap the letter ❤️</p>
+</div>
+
+<div id="letter">
+<div class="message">
+<p id="typewriter"></p>
+</div>
+<button class="closeBtn" onclick="closeLetter()">Close Letter 💕</button>
+</div>
+</div>
+
+<div id="heartGallery"></div>
+
+<div id="cake">
+<div>🎂</div>
+<h2>Happy Birthday, my love ❤️</h2>
+</div>
+
+</div>
+</div>
+
+<script>
+const startScreen=document.getElementById("startScreen");
+const music=document.getElementById("bgMusic");
+
+startScreen.addEventListener("click",()=>{
+music.play();
+startScreen.style.display="none";
+startCountdown();
+});
+
+function startCountdown(){
+let count=3;
+const countdown=document.getElementById("countdown");
+const birthday=document.getElementById("birthday");
+
+let interval=setInterval(()=>{
+count--;
+if(count>0){
+countdown.innerText=count;
+}else{
+clearInterval(interval);
+countdown.style.display="none";
+birthday.style.display="block";
+}
+},1000);
+}
+
+const text=`Happy Birthday to the most special person in my life ❤️
+
+Even though we are far apart, you always make my days brighter.
+
+Thank you for loving me, staying with me, and making me feel happy every single day.
+
+I wish I could celebrate beside you today.
+
+But until that day comes, please remember that my heart is always with you.
+
+I love you so much ❤️`;
+
+let index=0;
+
+function typeWriter(){
+if(index<text.length){
+document.getElementById("typewriter").innerHTML+=text.charAt(index);
+index++;
+setTimeout(typeWriter,38);
+}
+}
+
+function openLetter(){
+document.querySelector(".envelope").classList.add("open");
+setTimeout(()=>{
+document.querySelector(".envelope-container").style.display="none";
+document.getElementById("letter").style.display="block";
+typeWriter();
+},1000);
+}
+
+function closeLetter(){
+document.getElementById("birthday").style.display="none";
+document.getElementById("letter").style.display="none";
+showHeartPhotos();
+}
+
+function showHeartPhotos(){
+const gallery=document.getElementById("heartGallery");
+gallery.innerHTML="";
+gallery.style.display="block";
+
+const stage=document.createElement("div");
+stage.id="heartStage";
+gallery.appendChild(stage);
+
+const photos=[
+"photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg","photo5.jpg",
+"photo6.jpg","photo7.jpg","photo8.jpg","photo9.jpg","photo10.jpg",
+"photo11.jpg","photo12.jpg","photo13.jpg","photo14.jpg","photo15.jpg",
+"photo16.jpg","photo17.jpg","photo18.jpg","photo19.jpg","photo20.jpg",
+"photo21.jpg","photo22.jpg","photo23.jpg","photo24.jpg","photo25.jpg",
+"photo26.jpg"
+];
+
+const heartPoints=[];
+
+for(let i=0;i<photos.length;i++){
+const t=(Math.PI*2*i)/photos.length;
+
+const x=16*Math.pow(Math.sin(t),3);
+const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+
+heartPoints.push({x,y});
+}
+
+photos.forEach((src,i)=>{
+setTimeout(()=>{
+const img=document.createElement("img");
+img.src=src;
+img.className="flying-photo";
+
+const px=50 + heartPoints[i].x * 2.6;
+const py=50 + heartPoints[i].y * 2.7;
+
+img.style.left=px+"%";
+img.style.top=py+"%";
+img.style.setProperty("--r",(Math.random()*30-15)+"deg");
+
+stage.appendChild(img);
+},i*130);
+});
+
+setTimeout(()=>{
+gallery.style.display="none";
+document.getElementById("cake").style.display="block";
+},photos.length*130+6500);
+}
+setInterval(()=>{
+let stickers=["💖","✨","🎀","🌸","💕","🥰","💫"];
+let s=document.createElement("div");
+s.className="sticker";
+s.innerHTML=stickers[Math.floor(Math.random()*stickers.length)];
+s.style.left=Math.random()*100+"vw";
+s.style.top="100vh";
+document.body.appendChild(s);
+setTimeout(()=>s.remove(),7000);
+},900);
+
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let stars=[];
+for(let i=0;i<250;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2,
+speed:Math.random()*0.5+0.2
+});
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(star=>{
+ctx.beginPath();
+ctx.arc(star.x,star.y,star.size,0,Math.PI*2);
+ctx.fill();
+star.y+=star.speed;
+if(star.y>canvas.height){
+star.y=0;
+star.x=Math.random()*canvas.width;
+}
+});
+requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
